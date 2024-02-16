@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/models/current_weather_response.dart';
 import 'package:weather_app/models/forecast_response_model.dart';
+import 'package:weather_app/pages/settings_page.dart';
 import 'package:weather_app/providers/weather_provider.dart';
 import 'package:weather_app/utils/constants.dart';
 import 'package:weather_app/utils/helper_function.dart';
@@ -27,11 +28,19 @@ class _WeatherHomeState extends State<WeatherHome> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Weather Status'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+            },
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
       body: Consumer<WeatherProvider>(
         builder: (context, provider, child) => provider.hasDataLoaded
             ? Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _currentSection(provider.currentWeatherResponse!),
                   _forecastSection(provider.forecastResponseModel!.list!),
@@ -112,7 +121,12 @@ class _WeatherHomeState extends State<WeatherHome> {
               child: Column(
                 children: [
                   Text(getFormattedDateTime(item.dt!, pattern: 'EEE, hh:mm a')),
-                  Image.network(getIconDownloadUrl(item.weather!.first!.icon!), width: 40, height: 40,),Text(
+                  Image.network(
+                    getIconDownloadUrl(item.weather!.first!.icon!),
+                    width: 40,
+                    height: 40,
+                  ),
+                  Text(
                     item.weather!.first!.description!,
                     style: const TextStyle(fontSize: 14.0),
                   ),
