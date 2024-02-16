@@ -12,6 +12,7 @@ class WeatherProvider extends ChangeNotifier {
   double latitude = 0.0, longitude = 0.0;
   String unit = metric;
   String unitSymbol = celsius;
+  String pattern = 'hh:mm a';
 
   void setNewLocation(double latitude, double longitude) {
     this.latitude = latitude;
@@ -21,6 +22,10 @@ class WeatherProvider extends ChangeNotifier {
   void setUnit(bool status) {
     unit = status ? imperial : metric;
     unitSymbol = status ? fahrenheit : celsius;
+  }
+
+  void setTimeFormat(bool format) {
+    pattern = format ? 'HH:MM' : 'hh:mm a';
   }
 
   bool get hasDataLoaded => currentWeatherResponse != null &&

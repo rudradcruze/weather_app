@@ -13,11 +13,17 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
 
   bool isOn = false;
+  bool timeFormatIsOn = false;
 
   @override
   void initState() {
-    getStatus().then((value) => setState(() {
+
+    getUnit().then((value) => setState(() {
       isOn = value;
+    }));
+
+    getTimeFormat().then((value) => setState(() {
+      timeFormatIsOn = value;
     }));
     super.initState();
   }
@@ -38,11 +44,24 @@ class _SettingsPageState extends State<SettingsPage> {
               setState(() {
                 isOn = value;
               });
-              await setStatus(value);
+              await setUnit(value);
               context.read<WeatherProvider>().setUnit(value);
               context.read<WeatherProvider>().getData();
             },
-          )
+          ),
+          SwitchListTile(
+            title: const Text('Show time in 24 hour format'),
+            subtitle: const Text('Default is 12 hour format'),
+            value: timeFormatIsOn,
+            onChanged: (value) async {
+              setState(() {
+                timeFormatIsOn = value;
+              });
+              await setTimeFormat(value);
+              context.read<WeatherProvider>().setTimeFormat(value);
+              context.read<WeatherProvider>().getData();
+            },
+          ),
         ],
       ),
     );

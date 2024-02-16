@@ -43,8 +43,8 @@ class _WeatherHomeState extends State<WeatherHome> {
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _currentSection(provider.currentWeatherResponse!, provider.unitSymbol),
-                  _forecastSection(provider.forecastResponseModel!.list!, provider.unitSymbol),
+                  _currentSection(provider.currentWeatherResponse!, provider.unitSymbol, provider.pattern),
+                  _forecastSection(provider.forecastResponseModel!.list!, provider.unitSymbol, provider.pattern),
                 ],
               )
             : const Center(
@@ -56,7 +56,7 @@ class _WeatherHomeState extends State<WeatherHome> {
     );
   }
 
-  Widget _currentSection(CurrentWeatherResponse response, String unitSymbol) {
+  Widget _currentSection(CurrentWeatherResponse response, String unitSymbol, String pattern) {
     return Expanded(
       child: ListView(
         children: [
@@ -94,11 +94,11 @@ class _WeatherHomeState extends State<WeatherHome> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Sunrise: ${getFormattedDateTime(response.sys!.sunrise!, pattern: 'hh:mm')}, ',
+                'Sunrise: ${getFormattedDateTime(response.sys!.sunrise!, pattern: pattern)}, ',
                 style: timeTextStyle,
               ),
               Text(
-                  'Sunset: ${getFormattedDateTime(response.sys!.sunset!, pattern: 'hh:mm a')}',
+                  'Sunset: ${getFormattedDateTime(response.sys!.sunset!, pattern: pattern)}',
                   style: timeTextStyle),
             ],
           )
@@ -107,7 +107,7 @@ class _WeatherHomeState extends State<WeatherHome> {
     );
   }
 
-  Widget _forecastSection(List<ForecastItem> items, String unitSymbol) {
+  Widget _forecastSection(List<ForecastItem> items, String unitSymbol, String pattern) {
     return SizedBox(
       height: 150,
       child: ListView.builder(
@@ -121,7 +121,7 @@ class _WeatherHomeState extends State<WeatherHome> {
               padding: const EdgeInsets.all(4.0),
               child: Column(
                 children: [
-                  Text(getFormattedDateTime(item.dt!, pattern: 'EEE, hh:mm a')),
+                  Text(getFormattedDateTime(item.dt!, pattern: 'EEE, $pattern')),
                   Image.network(
                     getIconDownloadUrl(item.weather!.first!.icon!),
                     width: 40,
@@ -142,7 +142,7 @@ class _WeatherHomeState extends State<WeatherHome> {
 
   void _getWeatherData() async {
     final position = await determinePosition();
-    final status = await getStatus();
+    final status = await getUnit();
     context.read<WeatherProvider>().setNewLocation(position.latitude, position.longitude);
     context.read<WeatherProvider>().setUnit(status);
     context.read<WeatherProvider>().getData();
