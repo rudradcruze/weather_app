@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:weather_app/providers/weather_provider.dart';
 import 'package:weather_app/utils/preference_service.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -38,6 +39,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 isOn = value;
               });
               await setStatus(value);
+              context.read<WeatherProvider>().setUnit(value);
+              context.read<WeatherProvider>().getData();
             },
           )
         ],

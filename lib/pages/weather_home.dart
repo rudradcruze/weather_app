@@ -7,6 +7,7 @@ import 'package:weather_app/providers/weather_provider.dart';
 import 'package:weather_app/utils/constants.dart';
 import 'package:weather_app/utils/helper_function.dart';
 import 'package:weather_app/utils/location_service.dart';
+import 'package:weather_app/utils/preference_service.dart';
 import 'package:weather_app/utils/styles.dart';
 
 class WeatherHome extends StatefulWidget {
@@ -42,8 +43,8 @@ class _WeatherHomeState extends State<WeatherHome> {
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _currentSection(provider.currentWeatherResponse!),
-                  _forecastSection(provider.forecastResponseModel!.list!),
+                  _currentSection(provider.currentWeatherResponse!, provider.unitSymbol),
+                  _forecastSection(provider.forecastResponseModel!.list!, provider.unitSymbol),
                 ],
               )
             : const Center(
@@ -55,7 +56,7 @@ class _WeatherHomeState extends State<WeatherHome> {
     );
   }
 
-  Widget _currentSection(CurrentWeatherResponse response) {
+  Widget _currentSection(CurrentWeatherResponse response, String unitSymbol) {
     return Expanded(
       child: ListView(
         children: [
@@ -70,12 +71,12 @@ class _WeatherHomeState extends State<WeatherHome> {
             textAlign: TextAlign.center,
           ),
           Text(
-            "${response.main!.temp!.round()}$degree$celsius",
+            "${response.main!.temp!.round()}$degree$unitSymbol",
             style: const TextStyle(fontSize: 80.0),
             textAlign: TextAlign.center,
           ),
           Text(
-            "Feels Like ${response.main!.feelsLike!.round()}$degree$celsius",
+            "Feels Like ${response.main!.feelsLike!.round()}$degree$unitSymbol",
             style: const TextStyle(fontSize: 22.0),
             textAlign: TextAlign.center,
           ),
@@ -106,7 +107,7 @@ class _WeatherHomeState extends State<WeatherHome> {
     );
   }
 
-  Widget _forecastSection(List<ForecastItem> items) {
+  Widget _forecastSection(List<ForecastItem> items, String unitSymbol) {
     return SizedBox(
       height: 150,
       child: ListView.builder(
@@ -141,9 +142,9 @@ class _WeatherHomeState extends State<WeatherHome> {
 
   void _getWeatherData() async {
     final position = await determinePosition();
-    context
-        .read<WeatherProvider>()
-        .setNewLocation(position.latitude, position.longitude);
+    final status = await getStatus();
+    context.read<WeatherProvider>().setNewLocation(position.latitude, position.longitude);
+    context.read<WeatherProvider>().setUnit(status);
     context.read<WeatherProvider>().getData();
   }
 }
