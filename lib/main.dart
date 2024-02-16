@@ -5,8 +5,7 @@ import 'package:weather_app/providers/weather_provider.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
-      create: (context) => WeatherProvider(),
-      child: const MyApp()));
+      create: (context) => WeatherProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +18,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
       ),
       home: const WeatherHome(),
